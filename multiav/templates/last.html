@@ -1,0 +1,250 @@
+$def with (result_array, pagination)
+
+$def result_data_table_row(key, value, level, classes):
+  $ padding_style = "padding-left: {0}px".format(level * 10)
+  $ classes = classes + [key]
+  $ classes_string = " ".join(classes)
+
+  $if type(value) is dict:
+    $if not "--" in key:
+      <tr class="$classes_string collapsable" onclick="collapse(this)">
+        <td colspan="2" style="$padding_style">
+          <b>$key</b>
+          <span class="arrow-toggle collapsed" data-toggle="collapse" data-target="#collapseH" id="collapseP">
+        </td>
+      </tr>
+    $for subkey,subvalue in value.items():
+      $:result_data_table_row(subkey,subvalue, level + 1, classes)
+  
+  $elif type(value) is list:
+    <tr class="$classes_string collapsable" onclick="collapse(this)">
+      <td colspan="2" style="$padding_style">
+        <b>$key</b>
+      </td>
+    </tr>
+    $for item in value:
+      $:result_data_table_row("{0}--{1}".format(key, loop.index),item, level + 1, classes)
+  
+  $elif key != "plugin_type" and key != "error":
+    <tr class="$classes_string">
+      <td style="$padding_style">$key</td>
+      <td style="$padding_style">$value</td>
+    </tr>
+
+$def result_data_table(plugin_name, plugin_result_data):
+  <table class="data-table">
+    <tr>
+        <th colspan="2" class="$plugin_name collapsable" onclick="collapse(this)">$plugin_name</th>
+    </tr>
+    $for key,value in plugin_result_data.items():
+      $:result_data_table_row(key,value, 1, [plugin_name])
+  </table>
+
+<html>
+<head>
+  <link href="/static/multiav.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-container">
+        <div class="branding">
+            <span>MultiAV</span>      
+        </div>
+        <div class="navigation"> 
+            <ul>
+            <li><a href="/" tabindex="1">Scan file(s)</a></li>
+            <li class="active"><a href="/last" tabindex="2">Last reports</a></li>
+            <li><a href="/search" tabindex="3">Search reports</a></li>
+            </ul>
+        </div>
+        <div class="navigation pull-right">
+            <ul>
+                <li><a href="/system" tabindex="3">System</a></li>
+                <li><a href="/about" tabindex="3">About</a></li>
+            </ul>            
+        </div>
+        </div>
+    </div>
+    $ result_count = 0
+    $ add_autorefresh = False
+
+    <div class="content">
+    $for results in result_array:
+      $if result_count == 0:
+        <div class="actionmenu content">
+          <div class="actions">
+            <div class="actions-title">Actions:</div>
+            <div class="actions-body">
+              <span><a href="/export/csv?l=20&p=$pagination['currentpage']">Export shown results as csv</a></span>
+              <span><a href="/export/csv">Export all stored results as csv</a></span>            
+            </div>
+            <div class="toggle_checkbox" style="float: right;font-size: 12px;cursor: pointer;">
+              <input type="checkbox" checked onclick="toggle_refresh()" id="refreshtoggle"> Auto refresh</input>
+            </div>
+          </div>
+          <div class="pagination">
+            <div>
+              $if pagination["backpage_disabled"]:
+                <a class="not-allowed">&laquo;</a>
+              $else:
+                <a href="/last?page=$pagination['backpage']" title="previous page">&laquo;</a>
+            </div>
+            <div>
+                $for page in pagination["pages"]:
+                  $if page == pagination["currentpage"]:
+                    <a href="/last?page=$page" class="active">$page</a>
+                  $else:
+                    <a href="/last?page=$page">$page</a>
+            </div>
+            <div>
+              $if pagination["nextpage_disabled"]:
+                <a class="not-allowed">&raquo;</a>
+              $else:
+                <a href="/last?page=$pagination['nextpage']" title="next page">&raquo;</a>
+            </div>
+            </div>
+          </div>
+        <div id="background" style="height:385px"></div>
+        <div style="display:block; height:85px;"></div>
+      $else:
+          <div id="background"></div>
+      
+      $ result_count += 1
+
+      <table border="0" class="result-table">
+        <tr class="overview">
+          <td>
+            <div class="infected-percentage">
+              $if results["statistics"]["infected"] == 0:
+                <span class="clean">$results["statistics"]["infected"]%</span>
+              $else:
+                <span class="infected">$results["statistics"]["infected"]%</span>
+            </div>
+            <div class="engine-dection-ratio">
+              $if results["statistics"]["engine_detected_count"] == 0:
+                <span class="clean">$results["statistics"]["engine_detected_count"] / $results["statistics"]["engine_count"]</span>
+              $else:
+                <span class="infected">$results["statistics"]["engine_detected_count"] / $results["statistics"]["engine_count"]</span>
+            </div>
+          </td>
+          <td>
+            <h3>$results["statistics"]["engine_detected_count"] engine(s) detected this file</h3>
+            <table class="overview-table">
+              <tr>
+                <td>SHA256</td>
+                <td>$results["hashes"]["sha256"]</td>
+              </tr>
+              <tr>
+                <td>SHA1</td>
+                <td>$results["hashes"]["sha1"]</td>
+              </tr>
+              <tr>
+                <td>MD5</td>
+                <td>$results["hashes"]["md5"]</td>
+              </tr>
+              <tr>
+                <td>Filename</td>
+                <td>$results["file"]["name"]</td>
+              </tr>
+              <tr>
+                <td>Size</td>
+                <td>$results["file"]["size"] Bytes</td>
+              </tr>
+              <tr>
+                <td>Anaylsis date</td>
+                $if results["end_date"] == None:
+                  <td>Started: $results["start_date"] - Scanning process running...</td>
+                $else:
+                  $ duration = results["end_date"]-results["start_date"]
+                  <td>Started: $results["start_date"] Duration: $duration</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <ul class="tab-navigation">
+              $ first = True
+              $for plugin_type in PLUGIN_TYPE:
+                $if len(results[plugin_type]) != 0:
+                  $if first:
+                    <li class="tablink active" onclick="openTab(event,'$plugin_type.name')">
+                      <span>$plugin_type.name</span>
+                    </li>
+                    $ first = False
+                  $else:
+                    <li class="tablink" onclick="openTab(event,'$plugin_type.name')">
+                      <span>$plugin_type.name</span>
+                    </li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            $if len(results[PLUGIN_TYPE.AV]) != 0:
+              <div class="tab av">
+                <table id="data" class="data-table">
+                  <tr>
+                    <th>Name</th>
+                    <th>Result</th>
+                    <th>Engine version</th>
+                    <th>Signature version</th>
+                    <th>Internet access</th>
+                  </tr>
+                $for scanner_name, result in sorted(results[PLUGIN_TYPE.AV].items()):
+                  <tr>
+                    <td>$scanner_name</td>
+                    <td>
+                      $if result["queued"]:
+                        <span style="color:grey">&#x25cf;</span> queued...
+                        $ add_autorefresh = True
+                      $elif result["scanning"]:
+                        <span style="color:orange">&#x25cf;</span> scanning...
+                        $ add_autorefresh = True
+                      $else:
+                        $ has_error, error = result_has_error(result)
+                        $if has_error:
+                            <span style="color:darkred">&#x25cf;</span> $error
+                        $else:
+                          $if result["infected"]:
+                            $if "results" in result.keys():
+                              <span style="color:red">&#x25cf;</span> $:"".join(list(map(lambda kv: kv[0] + ": " + kv[1], result['results'].items())))
+                            $else:
+                              <span style="color:red">&#x25cf;</span> $result['result']
+                          $else:
+                            <span style="color:green">&#x25cf;</span> Clean
+                    </td>
+                    <td>$result['engine']</td>
+                    <td>$result['updated']</td>
+                    <td>
+                    $if result['has_internet'] == 1:
+                        <span style="color:red">&#x25cf; enabled</span>
+                    $else:
+                        <span style="color:green">&#x25cf; disabled</span>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            
+            $ remaining_plugin_types = list(PLUGIN_TYPE)
+            $ remaining_plugin_types.remove(PLUGIN_TYPE.AV)
+  
+            $for plugin_type in remaining_plugin_types:
+              $if len(results[PLUGIN_TYPE.AV]) == 0 and loop.first:
+                <div class="tab $plugin_type.name.lower()" style="display:none">
+              $else:
+                <div class="tab $plugin_type.name.lower()" style="display:none">
+              $for plugin_name, plugin_result_data in results[plugin_type].items():
+                $:result_data_table(plugin_name, plugin_result_data)
+              </div>
+          </td>
+        </tr>
+      </table>
+  </div>
+  $if add_autorefresh:
+    <script>var enableRefresh = true;</script>
+  $else:
+    <script>var enableRefresh = false;</script>
+  <script src="static/multiav.js" type="text/javascript"></script>
+</body>
+</html>

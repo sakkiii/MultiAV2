@@ -1,0 +1,229 @@
+$def with (scanners, cpu_count, AV_SPEED)
+<html>
+<head>
+<link href="/static/multiav.css" rel="stylesheet" type="text/css">
+<link href="/static/dropzone.css" rel="stylesheet" type="text/css">
+<script src="/static/multiav.js"></script>
+<script src="/static/dropzone.js"></script>
+</head>
+<body>
+    <div class="header">
+        <div class="header-container">
+        <div class="branding">
+            <span>MultiAV</span>      
+        </div>
+        <div class="navigation"> 
+            <ul>
+            <li class="active"><a href="/" tabindex="1">Scan file(s)</a></li>
+            <li><a href="/last" tabindex="2">Last reports</a></li>
+            <li><a href="/search" tabindex="3">Search reports</a></li>
+            </ul>
+        </div>
+        <div class="navigation pull-right">
+            <ul>
+                <li><a href="/system" tabindex="3">System</a></li>
+                <li><a href="/about" tabindex="3">About</a></li>
+            </ul>            
+        </div>
+        </div>
+    </div>
+    <div class="content">
+    <div id="background" style="height:310px"></div>
+    <table style="width:100%;margin-top:50px">
+    <tr>
+        <td>
+            <p>Upload and scan files with the antivirus solutions listed below.</p>
+            <form method="POST" enctype="multipart/form-data" action="/upload" class="dropzone" id="my-awesome-dropzone">
+                <div class="fallback">
+                    <input type="file" name="file_upload" />
+                    <br/>
+                    <input type="submit" value="Scan!"/>
+                </div>
+            </form>
+            <div class="table table-striped" class="files" id="previews">
+                <div id="template" class="file-row">
+                    <!-- This is used as the file preview template -->
+                    <div class="file-cell">
+                        <p class="name" data-dz-name></p>
+                        <strong class="error" data-dz-errormessage></strong>
+                    </div>
+                    <div class="file-cell">
+                        <p class="size" data-dz-size></p>
+                    </div>
+                    <div class="file-cell">
+                        <p class="status">upload queued</p>
+                    </div>
+                    <div>
+                        <a class="cancel" data-dz-remove title="remove">&#x2715;</a>
+                    </div>
+                </div>
+            </div>
+            <div id="scansettings" style="display:none">
+                <div class="toggle_checkbox" title="If checked, MultiAV uses plugins with internet access in the scan as well.">
+                    <input type="checkbox" name="allowLeak"><span> Allow data leak to vendors</span>
+                </div>
+                <div>
+                    <span>Min scanner speed</span>
+                    <select name="minspeed">
+                        $for speed in AV_SPEED:
+                            $if speed.name == "ALL":
+                                <option value="$speed.value" selected>$speed.name.lower().capitalize()</option>
+                            $else:
+                                <option value="$speed.value">$speed.name.lower().capitalize()</option>
+                    </select>
+                </div>
+            </div>
+            <button id="act-on-upload" class="button" style="display:none">Scan!</button>
+            </td>
+        </tr>
+    </table>
+
+    <p>Plugin(s) Overview:</p>
+    <table id="data" class="data-table">
+        <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Plugin type</th>
+            <th>Speed</th>
+            <th>Engine version</th>
+            <th>Signature version</th>
+            <th>Internet access</th>
+        </tr>
+    $if len(scanners) != 0:
+        $for scanner in sorted(scanners, key=lambda x: x["name"]):
+            <tr style="opacity:$("1.0" if scanner["enabled"] else "0.5")">
+                <td style="text-align: center">
+                    $if scanner["enabled"]:
+                        <span style="color:green;font-weight:bold" title="Scanner enabled">&#x2713;</span>
+                    $else:
+                        <span style="color:red;font-weight:bold" title="Scanner disabled">&#x2715;</span>
+                </td>
+                <td>$scanner['name']</td>
+                <td>
+                    $scanner["plugin_type"]
+                </td>
+                <td>$scanner['speed']</td>
+                <td>$(scanner['engine_version'] if len(scanner['engine_version']) != 0 else "-")</td>
+                <td>$(scanner['signature_version'] if len(scanner['signature_version']) != 0 else "-")</td>
+                <td>
+                $if scanner["has_internet"] == 1:
+                    <span style="color:red" title="WARNING: Sample could leak to this vendor!">&#x25cf; enabled</span>
+                $else:
+                    <span style="color:green">&#x25cf; disabled</span>
+                </td>
+            </tr>
+    $else:
+        <tr>
+            <td colspan="6"><center>No data. Please to a scan or perform an update!</center></td>
+        </tr>
+    </table>
+    <form method="POST" action="/update" onsubmit="return confirm('Do you really want to update the scanners?')">
+    <input type="submit" id="update-button" class="button" value="Update plugins"/>
+    </form>
+  </table>
+</div>
+<script>
+    reportIds = new Array();
+
+    var previewNode = document.querySelector("#template");
+    previewNode.id = "";
+    var previewTemplate = previewNode.parentNode.innerHTML;
+    previewNode.parentNode.removeChild(previewNode);
+
+    // Custom upload handler to support base64 encoded file uploads
+    var prot = Dropzone.prototype.submitRequest;
+    Dropzone.prototype.submitRequest = function (xhr, formData, files) {
+        if (this.options.customHandler) {
+            this.options.customHandler.call(this, xhr, formData, files, function (newXhr, newFormData, newFiles) {
+                prot.call(this, newXhr, newFormData, newFiles);
+            });
+        } else {
+            prot.call(this, xhr, formData, files);
+        }
+    };
+
+    Dropzone.options.myAwesomeDropzone = { 
+        url: "/api/v1/sample",
+        maxFilesize: null,
+        paramName: "file_upload",
+        uploadMultiple: false,
+        autoProcessQueue: false,
+        parallelUploads: $cpu_count,
+        autoQueue: false,
+        previewTemplate: previewTemplate,
+        timeout: 10 * 60 * 1000, // 10min
+        dictDefaultMessage: "... drop the files here to analyze ...",
+        init: function() {
+            var submitButton = document.querySelector("#act-on-upload");
+            myDropzone = this;
+            submitButton.addEventListener("click", function() {
+                addedFiles = myDropzone.getFilesWithStatus(Dropzone.ADDED)
+
+                if(addedFiles.length == 0)
+                    return;
+
+                for(file in addedFiles){
+                    myDropzone.enqueueFile(addedFiles[file]);
+                }
+                myDropzone.processQueue();
+                submitButton.innerHTML = "Processing queue...";
+                submitButton.disabled = true;
+            });
+            submitButton.style.display = 'block';
+            document.getElementById("scansettings").style.display = 'block';
+        },
+        drop: function(file){
+            var submitButton = document.querySelector("#act-on-upload");
+            if(submitButton.disabled) {
+                submitButton.disabled = false;
+                submitButton.innerHTML = "Scan!";
+            }
+        },
+        thumbnail: function(file){
+            file.previewElement.querySelector(".cancel").onclick = function() {
+                myDropzone.removeFile(file);
+            };
+        },
+        uploadprogress: function (file, progress) {
+            if(progress == 100) {
+                file.previewElement.querySelector(".status").innerHTML = "adding to scan queue...";
+            } else {
+                file.previewElement.querySelector(".status").innerHTML = "uploading (" + Math.round(progress) + "%)";
+            }
+        },
+        success: function(file, response) {
+            reportIds.push(response.id);
+            file.previewElement.querySelector(".status").innerHTML = "scan queued!";
+        },
+        errror: function(file, response) {
+            file.previewElement.querySelector(".status").innerHTML = "upload failed";
+        },
+        complete: function() {
+            myDropzone = this;
+            if(myDropzone.getFilesWithStatus(Dropzone.QUEUED).length != 0){
+                myDropzone.processQueue(); 
+            }
+            else if(myDropzone.getFilesWithStatus(Dropzone.ADDED).length == 0 && myDropzone.getFilesWithStatus(Dropzone.UPLOADING).length == 0 ){
+                window.location.href = "/search?id=" + reportIds.join(",");
+            }
+        },
+        customHandler: function(xhr, formData, files, cb) {
+            let base64_data = files[0].dataURL;
+            base64_data = base64_data.substr(base64_data.search("base64,") + 7);
+            let field = document.querySelector("#scansettings select");
+            let minspeed = field.value;
+            field = document.querySelector("#scansettings input");
+            let allow_internet = field.checked? "true": "false";
+
+            xhr.send(JSON.stringify({
+                "allow_internet": allow_internet,
+                "minspeed": minspeed,
+                "sample_name": files[0].name,
+                "sample": base64_data
+            }));
+        },
+    };
+    
+</script>
+</body>
+</html>

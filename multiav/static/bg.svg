@@ -1,0 +1,30 @@
+<svg width="1440" height="810" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin slice">
+ <g>
+  <title>Layer 1</title>
+  <path fill="url(#svg_10)" d="m592.66,0c-15,64.092 -30.7,125.285 -46.598,183.777c87.994,141.783 202.286,367.155 273.58,625.723l419.672,0c-54.796,-215.773 -156.19,-519.436 -336.677,-809.5l-309.977,0z" id="svg_1" fill-opacity="0.1"/>
+  <path fill="url(#svg_10)" d="m545.962,183.777c-53.796,196.576 -111.592,361.156 -163.49,490.74c11.7,44.494 22.8,89.49 33.1,134.883l404.07,0c-71.294,-258.468 -185.586,-483.84 -273.68,-625.623z" id="svg_2" fill-opacity="0.1"/>
+  <path fill="url(#svg_13)" d="m153.89,0c74.094,180.678 161.088,417.448 228.483,674.517c67.297,-168.18 144.69,-395.052 210.187,-674.517l-438.67,0z" id="svg_3" fill-opacity="0.1"/>
+  <path fill="url(#svg_12)" d="m153.89,0l-153.89,0l0,809.5l415.57,0c-70.093,-308.562 -174.686,-597.626 -261.68,-809.5z" id="svg_4" fill-opacity="0.1" stroke-opacity="0"/>
+  <path fill="url(#svg_11)" d="m1144.22,501.538c52.596,-134.583 101.492,-290.964 134.09,-463.343c1.2,-6.1 2.3,-12.298 3.4,-18.497c0,-0.2 0.1,-0.4 0.1,-0.6c1.1,-6.3 2.3,-12.7 3.4,-19.098l-382.674,0c105.293,169.28 183.688,343.158 241.684,501.638l0,-0.1z" id="svg_5" fill-opacity="0.1"/>
+  <path fill="url(#svg_10)" d="m1285.31,0a2161.05,2161.05 0 0 1 -6.9,38.195c43.097,48.195 101.193,120.785 161.59,218.973l0,-257.168l-154.69,0z" id="svg_6" fill-opacity="0.1"/>
+  <path fill="url(#svg_10)" d="m1278.31,38.196c-32.5,171.678 -81.09,327.36 -133.49,461.642l0,3.8c41,112.286 71.59,216.573 94.29,305.962l200.59,0.4l0,-553.232c-60.3,-97.988 -118.29,-170.48 -161.39,-218.573l0,0.001z" id="svg_7" fill-opacity="0.1"/>
+ </g>
+ <defs>
+  <linearGradient id="svg_10" spreadMethod="pad">
+   <stop stop-color="#ff9900" offset="0"/>
+   <stop stop-color="#e2e2e2" offset="1"/>
+  </linearGradient>
+  <linearGradient id="svg_11" spreadMethod="pad" x1="0" y1="0" x2="1" y2="0">
+   <stop stop-color="#ff9900" offset="0"/>
+   <stop stop-color="#e2e2e2" offset="1"/>
+  </linearGradient>
+  <linearGradient id="svg_12" spreadMethod="pad" x1="0" y1="0" x2="1" y2="0">
+   <stop stop-color="#e2e2e2" offset="0"/>
+   <stop stop-color="#ff9900" offset="0.600281"/>
+  </linearGradient>
+  <linearGradient id="svg_13" spreadMethod="pad" x1="0" y1="0" x2="1" y2="0">
+   <stop stop-color="#ff9900" offset="0.401062"/>
+   <stop stop-color="#e2e2e2" offset="1"/>
+  </linearGradient>
+ </defs>
+</svg>

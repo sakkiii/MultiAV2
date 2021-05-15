@@ -1,0 +1,47 @@
+$def with (search_error)
+<html>
+<head>
+<link href="/static/multiav.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-container">
+        <div class="branding">
+            <span>MultiAV</span>      
+        </div>
+        <div class="navigation"> 
+            <ul>
+            <li><a href="/" tabindex="1">Scan file(s)</a></li>
+            <li><a href="/last" tabindex="2">Last reports</a></li>
+            <li class="active"><a href="/search" tabindex="3">Search reports</a></li>
+            </ul>
+        </div>
+        <div class="navigation pull-right">
+            <ul>
+                <li><a href="/system" tabindex="3">System</a></li>
+                <li><a href="/about" tabindex="3">About</a></li>
+            </ul>            
+        </div>
+        </div>
+    </div>
+    <div class="content">
+        <div id="background" style="height:310px"></div>
+        <div class="search">
+                <p>Enter the search query in the field below</p>
+                <form method="POST" action="/search">
+                    <input type="text" class="query" name="q" />
+                    <input type="submit" value="Search" class="button"/>
+                </form>
+        </div>
+        $if search_error != None:
+            <div class="search-error">
+                <p>Search error: $search_error</p>
+            </div>
+        <div class="search-hints">
+            <p><b>Hint #1:</b> You can search for the MD5, SHA1, SHA256 hash or the filename.</p>
+            <p><b>Hint #2:</b> You can use the usual '%' and '?' SQL wildcards.</p>
+            <p><b>Hint #3:</b> Use ',' to seperate querys and execute multiple searches at once!.</p>
+        </div>
+    </div>
+</body>
+</html>
