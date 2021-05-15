@@ -19,6 +19,7 @@ requirements = [
     'rwlock==0.0.7',
     'promise==2.3',
     'requests==2.25.1',
+    'psycopg2==2.8.6',
 ]
 
 test_requirements = [
@@ -28,12 +29,12 @@ test_requirements = [
 
 setup(
     name='multiav',
-    version='0.1.1',
+    version='0.1.0',
     description="MultiAV scanner with Python and JSON API",
     long_description=readme + '\n\n' + history,
-    author="Joxean Koret",
-    author_email='admin@joxeankoret.com',
-    url='https://github.com/joxeankoret/multiav',
+    author="Sakkiii",
+    author_email='admin@sakkiii.com',
+    url='https://github.com/multiav2/multiav',
     packages=[
         'multiav',
     ],
@@ -49,16 +50,17 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: ISC License (ISCL)',
         'Natural Language :: English',
-        "Programming Language :: Python :: 2",
-        'Programming Language :: Python :: 2.6',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
+        "Programming Language :: Python :: 3 :: Only",
+        "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
     ],
     test_suite='tests',
     tests_require=test_requirements,
     scripts=[
-        'multiav/scripts/multiav-client.py',
+        # 'multiav/scripts/multiav-client.py',
         'multiav/scripts/runserver.py']
 )
