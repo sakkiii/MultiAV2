@@ -58,10 +58,10 @@ Thanx to @jampe @joxeankoret @blacktop
 
 ### Live System Overview
 
-![multiav-autoscale-overview](https://github.com/sakkiii/MultiAV2/blob/master/docs/images/multiav-autoscale-overview.png)
+![multiav-autoscale-overview](https://raw.githubusercontent.com/sakkiii/MultiAV2/main/docs/images/multiav-autoscale-overview.png)
 
 ### Update AntiVirus Engines
 **Update in progress**
-![multiav-update-in-progress](https://github.com/sakkiii/MultiAV2/blob/master/docs/images/multiav-update-in-progress.png)
+![multiav-update-in-progress](https://raw.githubusercontent.com/sakkiii/MultiAV2/main/docs/images/multiav-update-in-progress.png)
 **Update complete**
 ![multiav-update-complete](https://raw.githubusercontent.com/sakkiii/MultiAV2/master/docs/images/multiav-update-complete.png)
