@@ -9,7 +9,7 @@ Combine the awesome approaches of blacktop's av docker plugins with joxeankoret'
 
 ## Key Features
 
-* **Quick installation** - No AV installation required, everything is handled by MultiAV and is powered by docker containers
+* **Quick installation** - No AV installation required, everything is handled by MultiAV2 and is powered by docker containers
 * **Easy integration** - Access via web interface, REST API or python client
 * **Secure by design** - All engines operate in isolated docker containers preventing access the samples to gain access to the infrastructure
 * **Stay in control of your samples** - No leaks to AV vendors by design
@@ -42,7 +42,7 @@ Combine the awesome approaches of blacktop's av docker plugins with joxeankoret'
 ## Contributors
 Thanx to @jampe @joxeankoret @blacktop
 
-## MultiAV: Extended in Action
+## MultiAV2: Extended in Action
 ### Sample Upload Page
 
 ![multiav-upload](https://raw.githubusercontent.com/sakkiii/MultiAV2/master/docs/images/multiav-upload.png)
