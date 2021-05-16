@@ -9,7 +9,7 @@ Tests for `multiav` module.
 """
 
 import unittest
-from multiav import multiav
+import multiav
 
 
 class TestMultiav(unittest.TestCase):
