@@ -40,7 +40,6 @@ Combine the awesome approaches of blacktop's av docker plugins with joxeankoret'
   * Yara - Repo: [here](https://github.com/malice-plugins/yara)
   
 ## Contributors
-------------
 Thanx to @jampe @joxeankoret @blacktop
 
 ## MultiAV: Extended in Action
