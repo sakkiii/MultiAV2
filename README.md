@@ -18,7 +18,7 @@ Combine the awesome approaches of blacktop's av docker plugins with joxeankoret'
 * **Multiple scanning strategies** - define how your scans are executed / scheduled. Locally, Locally with a global limit or using the powerfull **auto scaleing system** supporting 17 hypervisors and cloud computing services
 * **Scan samples with 14 AV plugins**:
   * Avast[**Requires License**] - Repo: [here](https://github.com/malice-plugins/avast)
-  * Avg - Repo: [here](https://github.com/malice-plugins/avg)
+  * Avg [*Update Not Working*] - Repo: [here](https://github.com/malice-plugins/avg)
   * Avira[**Requires License**] - Repo: [here](https://github.com/malice-plugins/avira)
   * BitDefender[**Requires License**] - Repo: [here](https://github.com/malice-plugins/bitdefender)
   * Comodo - Repo: [here](https://github.com/malice-plugins/comodo)
