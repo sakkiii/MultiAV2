@@ -245,7 +245,7 @@ class DockerMachine:
                                                                               network_address)
         output = self.execute_command(cmd)
 
-        return not "Error" in output
+        return "Error" not in output
 
     def create_container(self, engine):
         with self._container_lock.writer_lock:
@@ -281,7 +281,7 @@ class DockerMachine:
 
             cmd = "docker stop {0}".format(" ".join(container_ids))
             output = self.execute_command(cmd, call_super=False)
-            return not "error" in output
+            return "error" not in output
 
     def pull_container(self, engine):
         container = DockerContainer(self, engine, -1, self.DOCKER_NETWORK_NO_INTERNET_NAME,
@@ -488,9 +488,10 @@ class LocalStaticDockerMachine(DockerMachine):
                 container = self._create_container(engine, run_now=True)
             elif len(containers_running_this_engine) == 1:
                 # there's already a container running this engine
-                print("WARNING: reusing already running container {0} with engine {1}. Assuming no scans are running "
-                      "on this one...".format(containers_running_this_engine[0].id, containers_running_this_engine[
-                    0].engine.name))
+                print("WARNING: reusing already running container {0} with engine {1}. "
+                      "Assuming no scans are running on this one..."
+                      .format(containers_running_this_engine[0].id,
+                              containers_running_this_engine[0].engine.name))
                 pass
             else:
                 # too many containers running this engine, stop all except one
@@ -899,7 +900,7 @@ class DockerContainer():
 
                 output = self.machine.execute_command(cmd)
 
-                if not "Successfully built" in output:
+                if "Successfully built" not in output:
                     print(output)
                     return False
 
@@ -995,16 +996,15 @@ class DockerContainer():
 
     def get_run_web_command(self):
         network_name = self.network_internet_name if self.engine.container_requires_internet else self.network_no_internet_name
-        cmd = "docker run -d --name {0} --net {1}$DOCKERPARAMS$ --rm malice/{2}:current$CMDARGS$ web".format(self.id,
-                                                                                                             network_name,
-                                                                                                             self.engine.container_name)
+        cmd = "docker run -d --name {0} --net {1}$DOCKERPARAMS$ --rm malice/{2}:current$CMDARGS$ web".\
+            format(self.id, network_name, self.engine.container_name)
         return self._replace_run_command_variables(cmd)
 
     def get_run_and_scan_command(self, file_to_scan):
         network_name = self.network_internet_name if self.engine.container_requires_internet else self.network_no_internet_name
-        cmd = "docker run --name {0} --net {1}$DOCKERPARAMS$ --rm -v /tmp/malware:/malware:ro malice/{" \
-              "2}:current$CMDARGS$ {3}".format(
-            self.id, network_name, self.engine.container_name, file_to_scan)
+        cmd = "docker run --name {0} --net {1}$DOCKERPARAMS$ --rm " \
+              "-v /tmp/malware:/malware:ro malice/{2}:current$CMDARGS$ {3}".\
+            format(self.id, network_name, self.engine.container_name, file_to_scan)
         return self._replace_run_command_variables(cmd)
 
     def run(self):
@@ -1079,7 +1079,7 @@ class DockerContainer():
         return True
 
     def remove_scan(self, file_path):
-        if not file_path in self.scans:
+        if file_path not in self.scans:
             self._check_pending_actions()
             return False
 
@@ -1122,7 +1122,7 @@ class DockerContainer():
         cmd = "docker rmi malice/{0}:{1}".format(self.engine.container_name, tag)
         output = self.machine.execute_command(cmd)
 
-        if "Error" in output and not "No such image" in output:
+        if "Error" in output and "No such image" not in output:
             print(output)
             return False
 
