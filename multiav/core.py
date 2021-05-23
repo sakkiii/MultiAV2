@@ -134,7 +134,8 @@ class CDockerAvScanner():
                 return False
 
             return True
-        except:
+        except Exception as exc:
+            print(exc)
             return False
 
     def scan(self, path):
@@ -178,7 +179,8 @@ class CDockerAvScanner():
             print("[{0}] Container: {2} Exception in scan method: {1}".format(self.name, e, self.container.id))
             try:
                 print(response)
-            except:
+            except Exception as exc:
+                print("Exception:", exc)
                 pass
             return {
                 "error": "{0}".format(e),

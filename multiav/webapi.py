@@ -1086,8 +1086,8 @@ class update:
         try:
             update_results['engine_update_complete_date'] = datetime.datetime.now()
             print("webapi: all engines updated")
-        except Exception as e:
-            print("webapi: _post_all_engines_updated EXCEPTION")
+        except Exception as exc:
+            print("webapi: _post_all_engines_updated EXCEPTION", exc)
             traceback.print_exc()
 
     def _post_engine_export(self, result):
