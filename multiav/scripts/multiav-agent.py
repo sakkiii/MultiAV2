@@ -114,5 +114,4 @@ if __name__ == "__main__":
                     minspeed = AV_SPEED(int(remaining_args[remaining_args.index(arg) + 1]))
                     print("- minspeed set to {0}".format(minspeed.value))
 
-#        main(sys.argv[1], sys.argv[2], minspeed=minspeed, allow_internet=allow_internet)
         pathmain(sys.argv[1], sys.argv[2], minspeed=minspeed, allow_internet=allow_internet)

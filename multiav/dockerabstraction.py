@@ -3,25 +3,18 @@ from __future__ import print_function
 import uuid
 import os
 import time
-import json
 import threading
-import signal
 import datetime
 
-from multiprocessing import Process, Queue, cpu_count
-from promise import Promise
 from rwlock import RWLock
-from threading import Lock
-from subprocess import Popen, PIPE, check_output, CalledProcessError, STDOUT
+from subprocess import check_output, CalledProcessError, STDOUT
 
-from multiav.enumencoder import EnumEncoder
 from multiav.multiactionpromise import MultiActionPromise
-from multiav.exceptions import CreateNetworkException, PullPluginException, StartPluginException, \
-    CreateDockerMachineMachineException
+from multiav.exceptions import CreateNetworkException, PullPluginException, CreateDockerMachineMachineException
 from multiav.parallelpromise import ParallelPromise
 
 
-class DockerMachine():
+class DockerMachine:
     def __init__(self, cfg_parser, engine_classes, max_containers_per_machine, max_scans_per_container,
                  id_overwrite=None, enable_startup_logic=True):
         if id_overwrite:
@@ -46,14 +39,14 @@ class DockerMachine():
         self.DOCKER_NETWORK_NO_INTERNET_NAME = self.cfg_parser.get("MULTIAV", "DOCKER_NETWORK_NO_INTERNET_NAME")
         self.DOCKER_NETWORK_INTERNET_NAME = self.cfg_parser.get("MULTIAV", "DOCKER_NETWORK_INTERNET_NAME")
 
-        # starup logic
+        # startup logic
         if enable_startup_logic:
             self.pull_all_containers()
             self.setup_networks()
             self.remove_running_containers()
 
     def remove_running_containers(self):
-        # reindex existing multiav containers
+        # reindex existing multi-av containers
         with self._container_lock.writer_lock:
             containers_to_remove = []
             for container_data in self._list_running_containers():
@@ -63,7 +56,7 @@ class DockerMachine():
 
                 container_image_name = container_data[0]
                 container_id = container_data[1]
-                if not "multiav-" in container_id:
+                if "multiav-" not in container_id:
                     continue
 
                 engine = self._get_engine_from_image_name(container_image_name)
@@ -79,14 +72,14 @@ class DockerMachine():
 
         existing_networks = self._list_existing_networks()
 
-        if not self.DOCKER_NETWORK_NO_INTERNET_NAME in existing_networks:
+        if self.DOCKER_NETWORK_NO_INTERNET_NAME not in existing_networks:
             print("No-Internet network is not existing. Creating it now...")
             if not self.create_no_internet_network():
                 raise CreateNetworkException("Could not create no-internet-network!")
 
             print("No-Internet network created")
 
-        if not self.DOCKER_NETWORK_INTERNET_NAME in existing_networks:
+        if self.DOCKER_NETWORK_INTERNET_NAME not in existing_networks:
             print("Internet network is not existing. Creating it now...")
             if not self.create_internet_network():
                 raise CreateNetworkException("Could not create internet-network!")
@@ -590,7 +583,7 @@ class DockerMachineMachine(DockerMachine):
                 break
 
         if not can_shutdown:
-            # resschedule check
+            # reschedule check
             print("try_shutdown: can not shut down machine.")
             return False
 
@@ -670,7 +663,7 @@ class DockerMachineMachine(DockerMachine):
         output = self.execute_command(cmd, call_super=True)
 
         # rise event
-        return not "Error" in output
+        return "Error" not in output
 
     def copy_image_to_machine(self, engine_name, update_file):
         def _copy_function(resolve, reject, machine, engine_name, update_file):
@@ -987,7 +980,7 @@ class DockerContainer():
             cmd = cmd.replace("$DOCKERPARAMS$", "")
         else:
             cmd = cmd.replace("$DOCKERPARAMS$", " " + " ".join(
-                map(lambda kv: kv[0] + "=" + kv[1] if kv[1] != None else kv[0],
+                map(lambda kv: kv[0] + "=" + kv[1] if kv[1] is not None else kv[0],
                     self.engine.container_run_docker_parameters.items())))
 
         # set command arguments
@@ -995,7 +988,7 @@ class DockerContainer():
             cmd = cmd.replace("$CMDARGS$", "")
         else:
             cmd = cmd.replace("$CMDARGS$", " " + " ".join(
-                map(lambda kv: kv[0] + "=" + kv[1] if kv[1] != None else kv[0],
+                map(lambda kv: kv[0] + "=" + kv[1] if kv[1] is not None else kv[0],
                     self.engine.container_run_command_arguments.items())))
 
         return cmd
@@ -1139,7 +1132,7 @@ class DockerContainer():
         cmd = "docker tag malice/{0}:{1} malice/{0}:{2}".format(self.engine.container_name, current_tag, new_tag)
         output = self.machine.execute_command(cmd)
 
-        if "Error" in output and not "No such image" in output:
+        if "Error" in output and "No such image" not in output:
             print(output)
             return False
         return True
