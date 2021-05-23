@@ -417,8 +417,8 @@ class LocalNoLimitDockerStrategy(LocalDockerStrategy):
                 lambda res: self._update_finished_event.set(),
                 lambda err: self._update_finished_event.set()
             )
-        except:
-            print("_update_internal: EXCEPTION")
+        except Exception as exc:
+            print("_update_internal: EXCEPTION", exc)
             traceback.print_exc()
 
     def update(self):
@@ -769,6 +769,7 @@ class AutoScaleDockerStrategy(ScannerStrategy):
         queue_size = self.pool.get_queue_size_including_active_workers()
         avg_scan_time = self._get_average_scan_time()
         total_workers = self.pool.get_worker_amount()
+        print("Total Workers:", total_workers)
 
         machines_starting = len(self._machines_starting)
 
@@ -1109,8 +1110,10 @@ class AutoScaleDockerStrategy(ScannerStrategy):
                     "shutdown_check_backoff": machine._shutdown_check_backoff if not machine.never_shutdown else "-",
                     "shutdown_check_last_date": str(
                         machine._shutdown_check_last_date) if not machine.never_shutdown else "-",
-                    "shutdown_check_next_date": str(machine._shutdown_check_last_date + datetime.timedelta(0,
-                                                                                                           machine.minimal_machine_run_time ** machine._shutdown_check_backoff)) if machine._shutdown_check_backoff is not None else "-",
+                    "shutdown_check_next_date":
+                        str(machine._shutdown_check_last_date +
+                            datetime.timedelta(0, machine.minimal_machine_run_time ** machine._shutdown_check_backoff))
+                        if machine._shutdown_check_backoff is not None else "-",
                     "container_amount": len(machine.containers),
                     "containers": list(map(lambda container: {
                         "id": container.id,

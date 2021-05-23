@@ -1198,7 +1198,7 @@ class DockerContainer():
                 # save updated container as new image with tag updated
                 try:
                     cmd = "docker commit {0} malice/{1}:updated".format(self.id, self.engine.container_name)
-                    output = self.machine.execute_command(cmd)
+                    self.machine.execute_command(cmd)
                 except Exception as e:
                     print("[{0}] Docker commit exception {1}".format(self.engine.container_name, e))
                     self.remove()
