@@ -7,7 +7,7 @@ from queue import Queue
 
 
 class PromiseExecutorPool:
-    def __init__(self, num_threads, workers_maxsize = 0):
+    def __init__(self, num_threads, workers_maxsize=0):
         self.workers_maxsize = workers_maxsize
         self.tasks = Queue()
         self.min_threads = num_threads
@@ -144,7 +144,7 @@ class Worker(threading.Thread):
                     # Mark this task as done, whether the promise is rejected or resolved
                     self.tasks.task_done()
             except Exception as e:
-                # get timeout
+                print(e)
                 pass
             finally:
                 with self._lock.reader_lock:

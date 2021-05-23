@@ -512,7 +512,8 @@ class CMultiAV:
                 obj = objects.pop()
 
                 args_combined = (obj, results, q)
-                if args is not None: args_combined += args
+                if args is not None:
+                    args_combined += args
 
                 p = Process(target=func, args=args_combined)
                 p.start()
@@ -552,11 +553,11 @@ class CMultiAV:
             if engine.is_disabled():
                 continue
 
-            if engine.container_requires_internet == True and not allow_internet:
+            if engine.container_requires_internet is True and not allow_internet:
                 print("[{0}] Skipping. Internet policy doesn't match".format(engine.name))
                 continue
 
-            if max_speed == None or engine.speed.value <= max_speed.value:
+            if max_speed is None or engine.speed.value <= max_speed.value:
                 engine_promise = self.scanner_strategy.scan(engine, path)
                 scan_promises[engine] = engine_promise
             else:
