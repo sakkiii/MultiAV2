@@ -252,7 +252,7 @@ class LocalLimitDockerStrategy(LocalDockerStrategy):
         LocalDockerStrategy.__init__(self, config_parser)
 
         # use thread pool to handle overload without scaling
-        self.max_containers_per_machine = int(self.cfg_parser.gets("MULTIAV","MAX_CONTAINERS", 8))
+        self.max_containers_per_machine = int(self.cfg_parser.gets("MULTIAV", "MAX_CONTAINERS", 8))
         if self.max_containers_per_machine <= 0:
             raise Exception("MAX_CONTAINERS invalid. Must be bigger than 0!")
 
@@ -290,8 +290,8 @@ class LocalLimitDockerStrategy(LocalDockerStrategy):
                 lambda res: self._update_finished_event.set(),
                 lambda err: self._update_finished_event.set()
             )
-        except:
-            print("_update_internal: EXCEPTION")
+        except Exception as exc:
+            print("_update_internal: EXCEPTION", exc)
             traceback.print_exc()
 
     def _wait_for_update_start_event(self, update_promise):
@@ -460,7 +460,7 @@ class AutoScaleDockerStrategy(ScannerStrategy):
         # locks
         self._machine_lock = RWLock()
         self._worker_lock = RWLock()
-        self._machines_starting = dict() # Event = amount of workers waiting
+        self._machines_starting = dict()    # Event = amount of workers waiting
 
         # use thread pool to handle overload when maxed out scaling => tasks will stay in queue
         self._min_workers = self.min_machines * self.max_containers_per_machine * self.max_scans_per_container
@@ -521,8 +521,8 @@ class AutoScaleDockerStrategy(ScannerStrategy):
             if len(machine) == 0:
                 continue
 
-            # descide what to do
-            if not "Running" in machine:
+            # decide what to do
+            if "Running" not in machine:
                 print("detected running machine {0} in ERRORNEOUS state!".format(machine[0]))
                 instance = DockerMachineMachine(self.cfg_parser, self.engine_classes, self.max_containers_per_machine,
                                                 self.max_scans_per_container, create_machine=False,
@@ -540,7 +540,7 @@ class AutoScaleDockerStrategy(ScannerStrategy):
                                                 self.max_scans_per_container, create_machine=False,
                                                 execute_startup_checks=False,
                                                 minimal_machine_run_time=self.minimal_machine_run_time,
-                                                id_overwrite = machine[0], never_shutdown=False)
+                                                id_overwrite=machine[0], never_shutdown=False)
                 if not instance.try_shutdown():
                     print("tried to remove machine {0} (max_machines already satisified) but failed. "
                           "please clean up manually!".format(machine[0]))
@@ -600,52 +600,52 @@ class AutoScaleDockerStrategy(ScannerStrategy):
     def _create_machine_async(self, never_shutdown=False):
         def promise_function(resolve, reject, never_shutdown):
             machine, startup_time = self._create_machine(never_shutdown)
-            if machine == None:
+            if machine is None:
                 reject(CreateDockerMachineMachineException())
 
             resolve(machine)
 
-        return ParallelPromise(lambda resolve,reject: promise_function(resolve, reject, never_shutdown))
+        return ParallelPromise(lambda resolve, reject: promise_function(resolve, reject, never_shutdown))
 
     def _create_machine(self, never_shutdown=False):
-            if len(self._machines) + 1 > self.max_machines:
-                print("create machine called but limit reached")
-                return None
+        if len(self._machines) + 1 > self.max_machines:
+            print("create machine called but limit reached")
+            return None
 
-            try:
-                with self._machine_lock.writer_lock:
-                    startup_event = Event()
-                    self._machines_starting[startup_event] = 0
+        try:
+            with self._machine_lock.writer_lock:
+                startup_event = Event()
+                self._machines_starting[startup_event] = 0
 
-                print("starting new machine...")
-                start_time = time.time()
+            print("starting new machine...")
+            start_time = time.time()
 
-                machine = DockerMachineMachine(self.cfg_parser, self.engine_classes, self.max_containers_per_machine,
-                                               self.max_scans_per_container, True, self.minimal_machine_run_time,
-                                               execute_startup_checks=True, never_shutdown=never_shutdown)
-                machine.on("shutdown", self._on_machine_shutdown)
+            machine = DockerMachineMachine(self.cfg_parser, self.engine_classes, self.max_containers_per_machine,
+                                           self.max_scans_per_container, True, self.minimal_machine_run_time,
+                                           execute_startup_checks=True, never_shutdown=never_shutdown)
+            machine.on("shutdown", self._on_machine_shutdown)
 
-                print("New machine {0} started! Copying samples to machine now...".format(machine.id))
+            print("New machine {0} started! Copying samples to machine now...".format(machine.id))
 
-                # copy active samples to machine
-                with self._workers_mounted_storage_lock.writer_lock:
-                    for path_to_sample in self._scanning_samples:
-                        self._execute_command("cp -u {0} /tmp/{1}/".format(path_to_sample, machine.id))
+            # copy active samples to machine
+            with self._workers_mounted_storage_lock.writer_lock:
+                for path_to_sample in self._scanning_samples:
+                    self._execute_command("cp -u {0} /tmp/{1}/".format(path_to_sample, machine.id))
 
-                with self._machine_lock.writer_lock:
-                    self._machines.append(machine)
-                    startup_event.set()
-                    del self._machines_starting[startup_event]
+            with self._machine_lock.writer_lock:
+                self._machines.append(machine)
+                startup_event.set()
+                del self._machines_starting[startup_event]
 
-                startup_time = time.time() - start_time
-                self._add_machine_startup_time(startup_time)
-                print("New average machine startup time: {0}s (machine started in {1}s)".
-                      format(self._get_average_machine_startup_time(), startup_time))
+            startup_time = time.time() - start_time
+            self._add_machine_startup_time(startup_time)
+            print("New average machine startup time: {0}s (machine started in {1}s)".
+                  format(self._get_average_machine_startup_time(), startup_time))
 
-                return machine, startup_time
-            except CreateDockerMachineMachineException as e:
-                print(e)
-                return None
+            return machine, startup_time
+        except CreateDockerMachineMachineException as e:
+            print(e)
+            return None
 
     def _on_machine_shutdown(self, machine):
         with self._machine_lock.writer_lock:
@@ -687,7 +687,7 @@ class AutoScaleDockerStrategy(ScannerStrategy):
             self._machine_lock.writer_lock.release()
 
             # start a new machine
-            m, startup_time = self._create_machine() # blocks for as long as the machine startup takes
+            m, startup_time = self._create_machine()    # blocks for as long as the machine startup takes
 
             if m is None:
                 return self._get_container_for_scan(engine, file_path)
@@ -738,7 +738,7 @@ class AutoScaleDockerStrategy(ScannerStrategy):
         for i in range(0, amount_of_times):
             machines_to_start, time_to_finish_queue = times[amount_of_times - 1 - i]
 
-            if amount_of_times -1 -i -1 >= 0:
+            if amount_of_times - 1 - i - 1 >= 0:
                 machines_to_start_prev, time_to_finish_queue_prev = times[amount_of_times - 1 - i - 1]
                 if time_to_finish_queue_prev > time_to_finish_queue:
                     amount_of_machines = machines_to_start
@@ -806,7 +806,7 @@ class AutoScaleDockerStrategy(ScannerStrategy):
 
     def scan(self, engine, path_to_sample):
         with self._workers_mounted_storage_lock.writer_lock:
-            if not path_to_sample in self._scanning_samples:
+            if path_to_sample not in self._scanning_samples:
                 print("first scan for {0}. copying to machines now...".format(path_to_sample))
                 with self._machine_lock.reader_lock:
                     for m in self._machines:

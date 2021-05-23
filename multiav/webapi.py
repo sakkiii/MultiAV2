@@ -404,14 +404,14 @@ class CDbSamples:
         try:
             with self.db.transaction():
                 if engine_version is not None:
-                    updated_rows = self.db.update("scanners", vars={"name": name}, where=where, \
-                                                  plugin_type=plugin_type_value, has_internet=has_internet, speed=speed, \
+                    updated_rows = self.db.update("scanners", vars={"name": name}, where=where,
+                                                  plugin_type=plugin_type_value, has_internet=has_internet, speed=speed,
                                                   signature_version=str(signature_version),
                                                   engine_version=str(engine_version))
                 else:
-                    updated_rows = self.db.update("scanners", vars={"name": name}, where=where, \
-                                                  plugin_type=plugin_type_value, has_internet=has_internet, speed=speed, \
-                                                  signature_version=str(signature_version))
+                    updated_rows = self.db.update("scanners", vars={"name": name}, where=where,
+                                                  plugin_type=plugin_type_value, has_internet=has_internet,
+                                                  speed=speed, signature_version=str(signature_version))
         except Exception as e:
             print("Exception update_scanner")
             print(locals())
@@ -488,7 +488,7 @@ def plugin_type_to_string(plugin_type):
 
 
 def result_has_error(result):
-    if not "error" in result:
+    if "error" not in result:
         return False, None
 
     if result["error"] == "":
@@ -583,8 +583,8 @@ class last:
                 "result_has_error": result_has_error,
                 "PLUGIN_TYPE": PLUGIN_TYPE})
             return render.last(result_array, pagination)
-        except Exception as e:
-            return '{exception: {0}}'.format(e)
+        except Exception as exc:
+            return '{exception: {0}}'.format(exc)
 
 
 # -----------------------------------------------------------------------
@@ -664,7 +664,7 @@ class export_csv:
         ]'''
 
             for value in result:
-                if not "name" in value:
+                if "name" not in value:
                     continue
 
                 name = value["name"]
@@ -707,7 +707,7 @@ class export_csv:
         with CDbSamples() as db:
             # get querys
             i = web.input(q=None, l=None, p=None)
-            if i["q"] != None:
+            if i["q"] is not None:
                 print("all results with query")
                 querys = list(set(i["q"].split(',')))
 
@@ -716,7 +716,7 @@ class export_csv:
                     rows = db.search_samples(query)
                     data += self.process_query_result(rows, headers)
 
-            elif i["l"] != None and i["p"] != None:
+            elif i["l"] is not None and i["p"] is not None:
                 print("limited search")
                 limit = int(i["l"])
                 page = int(i["p"])
@@ -736,8 +736,7 @@ class export_csv:
         engines.sort()
 
         # return & generate csv
-        csv = []
-        csv.append(';'.join(headers + engines))
+        csv = [';'.join(headers + engines)]
         for report in data:
             row = []
             for key in headers:
@@ -828,20 +827,20 @@ class api_sample:
             request_data = json.loads(web.data())
 
             # get request data
-            if not "minspeed" in request_data:
+            if "minspeed" not in request_data:
                 raise Exception("missing parameter: minspeed")
 
             minspeed = request_data["minspeed"]
             av_min_speed = AV_SPEED(int(minspeed))
 
-            if not "allow_internet" in request_data:
+            if "allow_internet" not in request_data:
                 raise Exception("missing parameter: allow_internet")
 
             av_allow_internet = request_data["allow_internet"].lower() == "true"
 
-            if not "sample" in request_data:
+            if "sample" not in request_data:
                 raise Exception("missing parameter: sample")
-            if not "sample_name" in request_data:
+            if "sample_name" not in request_data:
                 raise Exception("missing parameter: sample_name")
 
             buf = base64.b64decode(request_data["sample"])
@@ -1079,8 +1078,8 @@ class update:
                         signature_version=signature_version,
                         engine_version=engine_version)
 
-        except Exception as e:
-            print("webapi: _post_engine_update EXCEPTION")
+        except Exception as exc:
+            print("webapi: _post_engine_update EXCEPTION", exc)
             traceback.print_exc()
 
     def _post_all_engines_updated(self, result):
@@ -1111,16 +1110,16 @@ class update:
                 # set scp as ongoing
                 for machine_id in list(update_results['machine_results']):
                     update_results['machine_results'][machine_id][engine_name] = "scp"
-        except Exception as e:
-            print("webapi: _post_engine_export EXCEPTION")
+        except Exception as exc:
+            print("webapi: _post_engine_export EXCEPTION", exc)
             traceback.print_exc()
 
     def _post_all_engine_exported(self, result):
         try:
             update_results['engine_export_complete_date'] = datetime.datetime.now()
             print("webapi: all engines exported")
-        except Exception as e:
-            print("webapi: _post_all_engine_exported EXCEPTION")
+        except Exception as exc:
+            print("webapi: _post_all_engine_exported EXCEPTION", exc)
             traceback.print_exc()
 
     def _post_scp_to_workers(self, result):
@@ -1155,8 +1154,8 @@ class update:
                 print("webapi: all scp promises fullfiled. setting scp_complete_date...")
                 update_results['scp_complete_date'] = datetime.datetime.now()
 
-        except:
-            print("webapi: _post_scp_to_workers EXCEPTION")
+        except Exception as exc:
+            print("webapi: _post_scp_to_workers EXCEPTION", exc)
             print(result)
             traceback.print_exc()
 
@@ -1169,8 +1168,8 @@ class update:
 
             update_results['update_scan_lock'] = "set"
             update_results['load_started_date'] = result
-        except Exception as e:
-            print("webapi: _worker_image_load_started EXCEPTION")
+        except Exception as exc:
+            print("webapi: _worker_image_load_started EXCEPTION", exc)
             traceback.print_exc()
 
     def _post_worker_image_load(self, result):
@@ -1189,8 +1188,8 @@ class update:
                                                                                     result['engine_name']))
             update_results['machine_results'][result['machine_id']][result['engine_name']] = "ok"
             # no need to check if all promises are resolved => if so, update promise if resolved
-        except Exception as e:
-            print("webapi: _post_worker_image_load EXCEPTION")
+        except Exception as exc:
+            print("webapi: _post_worker_image_load EXCEPTION", exc)
             traceback.print_exc()
 
     def _update_complete(self, result):
@@ -1198,8 +1197,8 @@ class update:
             update_results['end_date'] = datetime.datetime.now()
             update_results["update_scan_lock"] = "unset"
             print("webapi: update complete")
-        except Exception as e:
-            print("webapi: _update_complete EXCEPTION")
+        except Exception as exc:
+            print("webapi: _update_complete EXCEPTION", exc)
             traceback.print_exc()
 
     def _initialize_update_data_structure(self):
