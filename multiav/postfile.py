@@ -2,7 +2,7 @@ import requests
 import base64
 
 
-def post_multipart(host, selector, fields, files):
+def post_multipart(host, fields, files):
     """
     Post fields and files to an http host as multipart/form-data.
     fields is a sequence of (name, value) elements for regular form fields.
@@ -16,6 +16,6 @@ def post_multipart(host, selector, fields, files):
     return r.json()
 
 
-def get_report(host, selector, fields, files):
+def get_report(host, fields, files):
     r = requests.get('http://' + host + ':8080/api/v1/sample/' + str(fields[0][1]))
     return r.json()
