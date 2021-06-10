@@ -584,7 +584,8 @@ class last:
                 "PLUGIN_TYPE": PLUGIN_TYPE})
             return render.last(result_array, pagination)
         except Exception as exc:
-            return '{exception: {0}}'.format(exc)
+            # return '{exception: {0}}'.format(exc)
+            return str({'exception': exc})
 
 
 # -----------------------------------------------------------------------
@@ -643,25 +644,6 @@ class export_csv:
         for row in rows:
             data_row = {}
             result = row['result']
-            '''[
-          {'magic': {'mime': 'text/xml', 'description': 'XML 1.0 document, UTF-8 Unicode (with BOM) text, with CRLF line terminators'}, 'ssdeep': '24:JdFHvQdjzgMFUAuKRMkNgwcYSejipyK0Y9WvcQqpQqSb8FQorZWKAikCDK3ArKyk:3FSzWEfNPipyfY0UnpnSHH0kCD6sc1pN', 'trid': ['72.7% (.XML) Generic XML (UTF-8) (8000/1)', '27.2% (.TXT) Text - U
-        TF-8 encoded (3000/1)'], 'exiftool': {'ExifToolVersionNumber': '11.11', 'FileSize': '1303 bytes', 'FileType': 'XML', 'FileTypeExtension': 'xml', 'MIMEType': 'application/xml', 'PrefsDataAdaptiveTrainingEnabled': 'False', 'PrefsDataAnimalNameMode': 'None', 'PrefsDataAutosaveIntervalDays': '1', 'PrefsDataCustomCursorE
-        nabled': 'True', 'PrefsDataDevMode': 'False', 'PrefsDataEdgeScreenScroll': 'True', 'PrefsDataExtremeDifficultyUnlocked': 'True', 'PrefsDataFullscreen': 'True', 'PrefsDataHatsOnlyOnMap': 'False', 'PrefsDataLangFolderName': 'English', 'PrefsDataLogVerbose': 'False', 'PrefsDataMaxNumberOfPlayerSettlements': '1', 'Prefs
-        DataPauseOnError': 'False', 'PrefsDataPauseOnLoad': 'False', 'PrefsDataPauseOnUrgentLetter': 'True', 'PrefsDataPlantWindSway': 'True', 'PrefsDataPreferredNames': '', 'PrefsDataResetModsConfigOnCrash': 'True', 'PrefsDataResourceReadoutCategorized': 'True', 'PrefsDataRunInBackground': 'True', 'PrefsDataScreenHeight':
-        '1440', 'PrefsDataScreenWidth': '2560', 'PrefsDataShowRealtimeClock': 'True', 'PrefsDataTemperatureMode': 'Celsius', 'PrefsDataTestMapSizes': 'False', 'PrefsDataUiScale': '1', 'PrefsDataVolumeAmbient': '1', 'PrefsDataVolumeGame': '0.8', 'PrefsDataVolumeMusic': '0.4'}, 'name': 'FileInfo', 'plugin_type': 2, 'speed': -
-        1, 'has_internet': False, 'queued': 0, 'scanning': 0},
-        {'infected': False, 'result': '', 'engine': '4.6.5.141', 'updated': '20190509', 'name': 'FProt', 'plugin_type': 1, 'speed': 0, 'has_internet': False, 'queued': 0, 'scanning': 0},
-        {'infected': False, 'result': '', 'engine': '3.0.0', 'database': '19050802', 'updated': '20190508', 'name': 'Avast', 'plugin_type': 1, 'speed': 0, 'has_internet': False, 'queued': 0, 'scanning': 0},
-        {'infected': False, 'result': '', 'engine': '', 'database': '', 'updated': '', 'error': 'exit status 2', 'name': 'Avg', 'plugin_type': 1, 'speed': -1, 'has_internet': False, 'queued': 0, 'scanning': 0},
-        {'infected': False, 'result': '', 'engine': '7.141118', 'updated': '20190509', 'name': 'BitDefender', 'plugin_type': 1, 'speed': 1, 'has_internet': False, 'queued': 0, 'scanning': 0},
-        {'infected': False, 'result': '', 'engine': '0.100.2', 'known': '6802108', 'updated': '20190509', 'name': 'ClamAV', 'plugin_type':1, 'speed': -1, 'has_internet': False, 'queued': 0, 'scanning': 0},
-        {'infected': False, 'result': '', 'engine': '5.0.163652.1142', 'updated': '20190509', 'name': 'Comodo', 'plugin_type': 1, 'speed': 0, 'has_internet': False, 'queued': 0, 'scanning': 0},
-        {'infected': False, 'result': '', 'engine': '7.0-20', 'updated': '20190509', 'name': 'EScan', 'plugin_type': 1, 'speed': 0, 'has_internet': False, 'queued': 0, 'scanning': 0},
-        {'infected': False, 'result': '', 'results': {'fse': '', 'aquarius': ''}, 'engine': '11.10 build 68', 'database': '2019-05-01_03', 'updated': '20190509', 'name': 'FSecure', 'plugin_type': 1, 'speed': 1, 'has_internet': False, 'queued': 0, 'scanning': 0},
-        {'infected': False, 'result': '', 'engine': '5600.1067', 'database': '9251', 'updated': '20190509', 'name': 'McAfee', 'plugin_type': 1, 'speed': 0, 'has_internet': False, 'queued': 0, 'scanning': 0},
-        {'infected': False, 'result': '', 'engine': '5.01.05', 'database':'09.05.2019 07:41:53 (Build: 101547)', 'updated': '20190509', 'name': 'Ikarus', 'plugin_type': 1, 'speed': 0, 'has_internet': False, 'queued': 0, 'scanning': 0},
-        {'infected': False, 'result': '', 'engine': '5.53.0', 'database': '5.63', 'updated': '20190509', 'name': 'Sophos', 'plugin_type': 1, 'speed': 2, 'has_internet': False, 'queued': 0, 'scanning': 0}
-        ]'''
 
             for value in result:
                 if "name" not in value:

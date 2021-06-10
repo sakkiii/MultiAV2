@@ -21,7 +21,7 @@ class MultiAVClient:
                 files = [("file_upload", os.path.basename(filename), file_buf)]
                 fields = [("minspeed", str(minspeed.value)), ("allow_internet", "true" if allow_internet else "false")]
 
-                response = postfile.post_multipart(self.host, selector, fields, files)
+                response = postfile.post_multipart(self.host, fields, files)
 
                 if response is None:
                     raise Exception("invalid response from host")
@@ -37,7 +37,7 @@ class MultiAVClient:
                 while not report_finished:
                     selector = "/api/v1/sample/"
                     fields = [("id", str(report_id))]
-                    report = postfile.get_report(self.host, selector, fields, [])
+                    report = postfile.get_report(self.host, fields, [])
 
                     report_finished = True
                     for scan_report in report["result"]:
