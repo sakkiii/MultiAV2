@@ -9,14 +9,15 @@ Tests for `multiav` module.
 """
 
 import unittest
-import multiav
+from multiav.core import AV_SPEED
 
 
 class TestMultiav(unittest.TestCase):
     def setUp(self):
         pass
 
-    def test_something(self):
+    def test_AV_SPEED(self):
+        self.output = AV_SPEED.ALL
         pass
 
     def tearDown(self):
