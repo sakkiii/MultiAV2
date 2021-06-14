@@ -7,35 +7,35 @@ $def result_data_table_row(key, value, level, classes):
 
   $if type(value) is dict:
     $if not "--" in key:
-      <tr class="$classes_string collapsable" onclick="collapse(this)">
-        <td colspan="2" style="$padding_style">
-          <b>$key</b>
-          <span class="arrow-toggle collapsed" data-toggle="collapse" data-target="#collapseH" id="collapseP">
-        </td>
-      </tr>
+        <tr class="$classes_string collapsable" onclick="collapse(this)">
+            <td colspan="2" style="$padding_style">
+              <b>$key</b>
+                <span class="arrow-toggle collapsed" data-toggle="collapse" data-target="#collapseH" id="collapseP"></span>
+            </td>
+        </tr>
     $for subkey,subvalue in value.items():
       $:result_data_table_row(subkey,subvalue, level + 1, classes)
-  
+
   $elif type(value) is list:
     <tr class="$classes_string collapsable" onclick="collapse(this)">
-      <td colspan="2" style="$padding_style">
-        <b>$key</b>
-      </td>
+        <td colspan="2" style="$padding_style">
+            <b>$key</b>
+        </td>
     </tr>
     $for item in value:
       $:result_data_table_row("{0}--{1}".format(key, loop.index),item, level + 1, classes)
-  
+
   $elif key != "plugin_type" and key != "error":
     <tr class="$classes_string">
-      <td style="$padding_style">$key</td>
-      <td style="$padding_style">$value</td>
+        <td style="$padding_style">$key</td>
+        <td style="$padding_style">$value</td>
     </tr>
 
 $def statistics_table(statistics):
-  <table class="data-table">
-    $for key,value in statistics.items():
-      $:result_data_table_row(key,value, 1, [])
-  </table>
+    <table class="data-table">
+        $for key,value in statistics.items():
+            $:result_data_table_row(key,value, 1, [])
+    </table>
 
 <html>
 <head>
@@ -45,9 +45,9 @@ $def statistics_table(statistics):
     <div class="header">
         <div class="header-container">
             <div class="branding">
-                <span>MultiAV</span>      
+                <span>MultiAV2</span>
             </div>
-            <div class="navigation"> 
+            <div class="navigation">
                 <ul>
                     <li><a href="/" tabindex="1">Scan file(s)</a></li>
                     <li><a href="/last" tabindex="2">Last reports</a></li>
@@ -58,7 +58,7 @@ $def statistics_table(statistics):
                 <ul>
                     <li class="active"><a href="/system" tabindex="3">System</a></li>
                     <li><a href="/about" tabindex="4">About</a></li>
-                </ul>            
+                </ul>
             </div>
         </div>
     </div>

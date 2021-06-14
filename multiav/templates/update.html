@@ -7,9 +7,9 @@ $def with (update_results)
   <div class="header">
       <div class="header-container">
       <div class="branding">
-          <span>MultiAV</span>      
+          <span>MultiAV2</span>
       </div>
-      <div class="navigation"> 
+      <div class="navigation">
           <ul>
           <li class="active"><a href="/" tabindex="1">Scan file(s)</a></li>
           <li><a href="/last" tabindex="2">Last reports</a></li>
@@ -20,13 +20,13 @@ $def with (update_results)
           <ul>
               <li><a href="/system" tabindex="3">System</a></li>
               <li><a href="/about" tabindex="3">About</a></li>
-          </ul>            
+          </ul>
       </div>
       </div>
   </div>
   <div class="content">
     <div class="actionmenu content">
-      <div class="actions">        
+      <div class="actions">
         <div class="toggle_checkbox" style="float: right;font-size: 12px;cursor: pointer;">
             <input type="checkbox" checked onclick="toggle_refresh()" id="refreshtoggle"> Auto refresh</input>
           </div>
@@ -35,47 +35,46 @@ $def with (update_results)
   <div id="background" style="height:70px"></div>
     <h4 style="margin-top:40px">Plugin update results<small style="font-weight: normal;padding-left: 30px;">last refresh: $update_results["last_refresh"]</small></h4>
     <div>
-      <dl style="padding-left: 0px; font-size:80%">
-        <dt>State:</dt>
-        $if update_results["end_date"] == "-":
-          <dd><span style="color:orange">updating...</span></dd>
-        $else:
-          <dd><span style="color:green">update complete</span></dd>
+        <ul style="padding-left: 0px; font-size:80%">
+            <dt>State:</dt>
+            $if update_results["end_date"] == "-":
+              <dd><span style="color:orange">updating...</span></dd>
+            $else:
+              <dd><span style="color:green">update complete</span></dd>
 
-        <dt>Start:</dt>
-        <dd>$update_results["start_date"]</dd>
-        
-        $if update_results["is_auto_scale_strategy"] == True:
-          <dt>Engine Update complete:</dt>
-          <dd>$update_results["engine_update_complete_date"]</dd>
-          <dt>Image Export complete:</dt>
-          <dd>$update_results["engine_export_complete_date"]</dd>
-          $if len(update_results['machine_results']) > 0:
-            <dt>SCP complete:</dt>
-            <dd>$update_results["scp_complete_date"]</dd>          
-            <dt>Load started:</dt>
-            <dd>$update_results["load_started_date"]</dd>
-        
-        <dt>End:</dt>
-        $ end_date = update_results["end_date"] if update_results["end_date"] != "-" else "-"
-        <dd>$end_date</dd>
-        <dt>Duration:</dt>
-        $if update_results["end_date"] == "-":
-          <dd>-</dd>
-        $else:
-          $ duration = update_results["end_date"]-update_results["start_date"]
-          <dd>$duration</dd>
-        <dt>Update Lock</dt>
-        $if update_results["update_scan_lock"] == "set":
-          <dd style="color:darkgreen">Set - all upcoming scans wait for this update to finish</dd>
-        $elif update_results["update_scan_lock"] == "queue":
-          <dd style="color:darkred">In queue - system is performing scans added to the queue prior to the update start. Image load is waiting for those tasks to finish.</dd>
-        $else:
-          <dd style="color:darkgreen">Unset - system is performing scans normally.</dd>
-      </ul>
-      
-      
+            <dt>Start:</dt>
+            <dd>$update_results["start_date"]</dd>
+
+            $if update_results["is_auto_scale_strategy"] == True:
+              <dt>Engine Update complete:</dt>
+              <dd>$update_results["engine_update_complete_date"]</dd>
+              <dt>Image Export complete:</dt>
+              <dd>$update_results["engine_export_complete_date"]</dd>
+              $if len(update_results['machine_results']) > 0:
+                <dt>SCP complete:</dt>
+                <dd>$update_results["scp_complete_date"]</dd>
+                <dt>Load started:</dt>
+                <dd>$update_results["load_started_date"]</dd>
+
+            <dt>End:</dt>
+            $ end_date = update_results["end_date"] if update_results["end_date"] != "-" else "-"
+            <dd>$end_date</dd>
+            <dt>Duration:</dt>
+            $if update_results["end_date"] == "-":
+              <dd>-</dd>
+            $else:
+              $ duration = update_results["end_date"]-update_results["start_date"]
+              <dd>$duration</dd>
+            <dt>Update Lock</dt>
+            $if update_results["update_scan_lock"] == "set":
+              <dd style="color:darkgreen">Set - all upcoming scans wait for this update to finish</dd>
+            $elif update_results["update_scan_lock"] == "queue":
+              <dd style="color:darkred">In queue - system is performing scans added to the queue prior to the update start. Image load is waiting for those tasks to finish.</dd>
+            $else:
+              <dd style="color:darkgreen">Unset - system is performing scans normally.</dd>
+        </ul>
     </div>
+
     <table border="0" class="data-table">
       $ add_autorefresh = False
       $if len(update_results['results'].keys()) != 0:
@@ -114,7 +113,7 @@ $def with (update_results)
                 $ add_autorefresh = True
             </td>
             $if update_results["is_auto_scale_strategy"]:
-              $if values['exported'] == "-":  
+              $if values['exported'] == "-":
                 <td>&#x25cf; -</td>
                 $ add_autorefresh = True
               $elif values['exported'] == "...":
@@ -130,7 +129,7 @@ $def with (update_results)
           <td>-</td>
         </tr>
     </table>
-    
+
     $if update_results["is_auto_scale_strategy"]:
       <br />
       <table border="0" class="data-table">
@@ -144,7 +143,7 @@ $def with (update_results)
             <tr>
               <td>$machine_id</td>
               $for engine_name, value in sorted(engine_dict.items()):
-                $if value == "-":  
+                $if value == "-":
                   <td>-</td>
                   $ add_autorefresh = True
                 $elif value == "scp":
@@ -168,7 +167,7 @@ $def with (update_results)
     <script>var enableRefresh = true;</script>
   $else:
     <script>var enableRefresh = false;</script>
-  
+
   <script src="/static/multiav.js"></script>
 </body>
 </html>

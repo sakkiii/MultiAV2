@@ -10,12 +10,12 @@ $def result_data_table_row(key, value, level, classes):
       <tr class="$classes_string collapsable" onclick="collapse(this)">
         <td colspan="2" style="$padding_style">
           <b>$key</b>
-          <span class="arrow-toggle collapsed" data-toggle="collapse" data-target="#collapseH" id="collapseP">
+            <span class="arrow-toggle collapsed" data-toggle="collapse" data-target="#collapseH" id="collapseP"></span>
         </td>
       </tr>
     $for subkey,subvalue in value.items():
       $:result_data_table_row(subkey,subvalue, level + 1, classes)
-  
+
   $elif type(value) is list:
     <tr class="$classes_string collapsable" onclick="collapse(this)">
       <td colspan="2" style="$padding_style">
@@ -24,7 +24,7 @@ $def result_data_table_row(key, value, level, classes):
     </tr>
     $for item in value:
       $:result_data_table_row("{0}--{1}".format(key, loop.index),item, level + 1, classes)
-  
+
   $elif key != "plugin_type" and key != "error":
     <tr class="$classes_string">
       <td style="$padding_style">$key</td>
@@ -48,9 +48,9 @@ $def result_data_table(plugin_name, plugin_result_data):
 <div class="header">
   <div class="header-container">
     <div class="branding">
-      <span>MultiAV</span>      
+      <span>MultiAV2</span>
     </div>
-    <div class="navigation"> 
+    <div class="navigation">
       <ul>
         <li><a href="/" tabindex="1">Scan file(s)</a></li>
         <li><a href="/last" tabindex="2">Last reports</a></li>
@@ -61,7 +61,7 @@ $def result_data_table(plugin_name, plugin_result_data):
         <ul>
             <li><a href="/system" tabindex="3">System</a></li>
             <li><a href="/about" tabindex="3">About</a></li>
-        </ul>            
+        </ul>
     </div>
   </div>
 </div>
@@ -70,7 +70,7 @@ $def result_data_table(plugin_name, plugin_result_data):
     <div class="actions">
       <div class="actions-title">Actions:</div>
       <div class="actions-body">
-        <span><a href="/export/csv?q=$query">Export results as csv</a></span>      
+        <span><a href="/export/csv?q=$query">Export results as csv</a></span>
       </div>
       <div class="toggle_checkbox" style="float: right;font-size: 12px;cursor: pointer;">
         <input type="checkbox" checked onclick="toggle_refresh()" id="refreshtoggle"> Auto refresh</input>
@@ -199,7 +199,7 @@ $def result_data_table(plugin_name, plugin_result_data):
                 </tr>
               </table>
             </div>
-          
+
           $ remaining_plugin_types = list(PLUGIN_TYPE)
           $ remaining_plugin_types.remove(PLUGIN_TYPE.AV)
 
