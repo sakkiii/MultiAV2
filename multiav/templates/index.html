@@ -208,19 +208,24 @@ $def with (scanners, cpu_count, AV_SPEED)
             }
         },
         customHandler: function(xhr, formData, files, cb) {
-            let base64_data = files[0].dataURL;
-            base64_data = base64_data.substr(base64_data.search("base64,") + 7);
-            let field = document.querySelector("#scansettings select");
-            let minspeed = field.value;
-            field = document.querySelector("#scansettings input");
-            let allow_internet = field.checked? "true": "false";
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                let base64_data = e.currentTarget.result;
+                base64_data = base64_data.substr(base64_data.search("base64,") + 7);
 
-            xhr.send(JSON.stringify({
-                "allow_internet": allow_internet,
-                "minspeed": minspeed,
-                "sample_name": files[0].name,
-                "sample": base64_data
-            }));
+                let field = document.querySelector("#scansettings select");
+                let minspeed = field.value;
+                field = document.querySelector("#scansettings input");
+                let allow_internet = field.checked? "true": "false";
+
+                xhr.send(JSON.stringify({
+                    "allow_internet": allow_internet,
+                    "minspeed": minspeed,
+                    "sample_name": files[0].name,
+                    "sample": base64_data
+                }));
+            };
+            reader.readAsDataURL(files[0]);
         },
     };
 
