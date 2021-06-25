@@ -1,5 +1,5 @@
 ```
-Don't forget to ⭐ this repo if you like immudb!
+Don't forget to ⭐ this repo if you like MultiAV2!
 ```
 
 MultiAV2:
