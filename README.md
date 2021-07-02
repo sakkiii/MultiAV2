@@ -45,26 +45,3 @@ Combine the awesome approaches of blacktop's av docker plugins with joxeankoret'
   
 ## Contributors
 Thanx to @jampe @joxeankoret @blacktop
-
-## MultiAV2 in Action
-### Sample Upload Page
-
-![multiav-upload](https://raw.githubusercontent.com/sakkiii/MultiAV2/master/docs/images/multiav-upload.png)
-
-### Scan Result Live Tracking
-
-![multiav-scan-running](https://raw.githubusercontent.com/sakkiii/MultiAV2/master/docs/images/multiav-scan-running.png)
-
-### Search the Report DB
-
-![multiav-search](https://raw.githubusercontent.com/sakkiii/MultiAV2/master/docs/images/multiav-search.png)
-
-### Live System Overview
-
-![multiav-autoscale-overview](https://raw.githubusercontent.com/sakkiii/MultiAV2/main/docs/images/multiav-autoscale-overview.png)
-
-### Update AntiVirus Engines
-**Update in progress**
-![multiav-update-in-progress](https://raw.githubusercontent.com/sakkiii/MultiAV2/main/docs/images/multiav-update-in-progress.png)
-**Update complete**
-![multiav-update-complete](https://raw.githubusercontent.com/sakkiii/MultiAV2/master/docs/images/multiav-update-complete.png)
