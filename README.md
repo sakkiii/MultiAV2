@@ -10,6 +10,7 @@ Combine the awesome approaches of blacktop's av docker plugins with joxeankoret'
 - [QuickStart Guide](https://github.com/sakkiii/MultiAV2/wiki/QuickStart-Guide)
 - [Configuration Documentation](https://github.com/sakkiii/MultiAV2/wiki/Configuration)
 - [REST API Documentation](https://github.com/sakkiii/MultiAV2/wiki/REST-API)
+- [MultiAV2 in Action](https://github.com/sakkiii/MultiAV2/wiki/MultiAV2-in-Action)
 
 ## Key Features
 
