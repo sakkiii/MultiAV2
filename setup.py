@@ -18,8 +18,7 @@ requirements = [
     'web.py==0.62',
     'rwlock==0.0.7',
     'promise==2.3',
-    'requests==2.26.0',
-    'psycopg2==2.9.1',
+    'requests>=2.25.1',
 ]
 
 test_requirements = [
