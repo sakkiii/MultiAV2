@@ -343,7 +343,6 @@ class DockerMachine:
             lambda resolve, reject: _load_update_file_internal(resolve, reject, update_file, self.id, engine_name))
 
     def execute_command(self, command, call_super=False, shell=False):
-        print("--execute command: " + command)
         '''try:
             # close_fds=True ?
             process = subprocess.call(command, stdout=PIPE, close_fds=True)
@@ -1023,8 +1022,6 @@ class DockerContainer():
 
                 return True
             except Exception as e:
-                print(cmd)
-                print(e)
                 return False
 
     def remove(self):
