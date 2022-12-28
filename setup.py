@@ -32,8 +32,8 @@ setup(
     description="MultiAV scanner with Python and JSON API",
     long_description=readme + '\n\n' + history,
     author="Sakkiii",
-    author_email='admin@sakkiii.com',
-    url='https://github.com/multiav2/multiav',
+    author_email='s@sakkiii.in',
+    url='https://github.com/sakkiii/MultiAV2',
     packages=[
         'multiav',
     ],
